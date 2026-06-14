@@ -20,7 +20,7 @@ provider "google-beta" {
 terraform {
   backend "gcs" {
     prefix      = "news"
-    bucket      = " joi-news-tfstate"
+    bucket      = "joi-news-tfstate"
     # credentials = "../.interviewee-creds.json"
   }
 }
