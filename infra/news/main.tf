@@ -46,8 +46,8 @@ resource "google_compute_instance" "front_end" {
 
   metadata_startup_script = templatefile("${path.module}/provision-front_end.sh", {
     docker_image         = "${local.gcr_url}/front_end:latest"
-    quote_service_url    = "http://${google_compute_instance.quotes.network_interface.0.access_config.0.nat_ip}:8082"
-    newsfeed_service_url = "http://${google_compute_instance.newsfeed.network_interface.0.access_config.0.nat_ip}:8081"
+    quote_service_url    = "http://${google_compute_instance.quotes.network_interface.0.network_ip}:8082"
+    newsfeed_service_url = "http://${google_compute_instance.newsfeed.network_interface.0.network_ip}:8081"
     static_url           = "https://storage.googleapis.com/${google_storage_bucket.news.name}"
   })
 
