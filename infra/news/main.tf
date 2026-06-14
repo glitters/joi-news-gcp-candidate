@@ -21,11 +21,11 @@ resource "google_artifact_registry_repository_iam_binding" "viewer" {
 }
 
 data "google_compute_network" "default" {
-  name = "vpc-${var.prefix}"
+  name = "vpc-news4321"
 }
 
 data "google_compute_subnetwork" "subnet" {
-  name = "subnet-${var.prefix}"
+  name = "subnet-news4321"
 }
 
 #################################################
@@ -36,7 +36,7 @@ resource "google_compute_instance" "front_end" {
   name         = "${var.prefix}-front-end"
   machine_type = var.machine_type
   zone         = "${var.region}-a"
-  tags         = ["web"]
+  tags         = ["ssh-enabled", "web"]
 
   boot_disk {
     initialize_params {
@@ -84,7 +84,7 @@ resource "google_compute_instance" "quotes" {
   name         = "${var.prefix}-quotes"
   machine_type = var.machine_type
   zone         = "${var.region}-a"
-  tags         = ["quotes"]
+  tags         = ["ssh-enabled", "quotes"]
 
   boot_disk {
     initialize_params {
@@ -128,7 +128,7 @@ resource "google_compute_instance" "newsfeed" {
   name         = "${var.prefix}-newsfeed"
   machine_type = var.machine_type
   zone         = "${var.region}-a"
-  tags         = ["newsfeed"]
+  tags         = ["ssh-enabled", "newsfeed"]
 
   boot_disk {
     initialize_params {
@@ -162,6 +162,20 @@ resource "google_compute_firewall" "newsfeed" {
 
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["newsfeed"]
+}
+
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "allow-ssh"
+  network = data.google_compute_network.default.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]  # or restrict to YOUR_IP/32 for safety
+
+  target_tags = ["ssh-enabled"]
 }
 
 #################################################
